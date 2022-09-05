@@ -6,15 +6,20 @@ using UnityEngine.UI;
 
 public class MainManager : MonoBehaviour
 {
+    public static MainManager instance;
+
     public Brick BrickPrefab;
     public int LineCount = 6;
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text highScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
+    private string playerName;
+    private int highScore;
     
     private bool m_GameOver = false;
 
@@ -36,6 +41,17 @@ public class MainManager : MonoBehaviour
                 brick.onDestroyed.AddListener(AddPoint);
             }
         }
+
+        if(ProfileManager.instance != null) {
+            playerName = ProfileManager.instance.playerName;
+            highScore = ProfileManager.instance.highScore;
+        }
+
+        highScoreText.text = $"Best score: {playerName}: {highScore}";
+    }
+
+    private void Awake() {
+        
     }
 
     private void Update()
@@ -66,11 +82,18 @@ public class MainManager : MonoBehaviour
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        if(m_Points > highScore) {
+            highScoreText.text = $"Best Score: {playerName}: {highScore}";
+        }
     }
 
     public void GameOver()
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        if(m_Points > highScore) {
+            highScore = m_Points;
+        }
+        ProfileManager.instance.SaveProfile (playerName, highScore);
     }
 }

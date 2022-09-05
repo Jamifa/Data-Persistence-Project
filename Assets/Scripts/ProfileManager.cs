@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 using System.IO;
 
 public class ProfileManager : MonoBehaviour
@@ -9,6 +11,9 @@ public class ProfileManager : MonoBehaviour
 
     public string playerName;
     public int highScore;
+    public string highScorePlayerName;
+
+    public TMP_InputField playerNameInputField;
 
     private void Awake() {
         if(instance != null) {
@@ -18,6 +23,8 @@ public class ProfileManager : MonoBehaviour
 
         instance = this;
         DontDestroyOnLoad (gameObject);
+        Debug.Log (Application.persistentDataPath);
+        playerNameInputField.text = LoadProfile ();
     }
     
     [System.Serializable]
@@ -28,10 +35,10 @@ public class ProfileManager : MonoBehaviour
     }
 
     public void SaveProfile(string newPlayerName, int newHighScore) {
-        playerName = newPlayerName;
+        highScorePlayerName = newPlayerName;
         highScore = newHighScore;
         PlayerProfile profile = new PlayerProfile ();
-        profile.name = playerName;
+        profile.name = highScorePlayerName;
         profile.highScore = newHighScore;
 
         string json = JsonUtility.ToJson (profile);
@@ -45,9 +52,9 @@ public class ProfileManager : MonoBehaviour
             string json = File.ReadAllText (path);
             PlayerProfile profile = JsonUtility.FromJson<PlayerProfile> (json);
 
-            playerName = profile.name;
+            highScorePlayerName = profile.name;
             highScore = profile.highScore;
-            return playerName;
+            return highScorePlayerName;
         } else {
             return "";
         }

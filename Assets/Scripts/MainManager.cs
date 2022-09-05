@@ -20,6 +20,7 @@ public class MainManager : MonoBehaviour
     private int m_Points;
     private string playerName;
     private int highScore;
+    private string highScorePlayerName;
     
     private bool m_GameOver = false;
 
@@ -45,9 +46,10 @@ public class MainManager : MonoBehaviour
         if(ProfileManager.instance != null) {
             playerName = ProfileManager.instance.playerName;
             highScore = ProfileManager.instance.highScore;
+            highScorePlayerName = ProfileManager.instance.highScorePlayerName;
         }
 
-        highScoreText.text = $"Best score: {playerName}: {highScore}";
+        highScoreText.text = $"Best score: {highScorePlayerName}: {highScore}";
     }
 
     private void Awake() {
@@ -83,7 +85,7 @@ public class MainManager : MonoBehaviour
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
         if(m_Points > highScore) {
-            highScoreText.text = $"Best Score: {playerName}: {highScore}";
+            highScoreText.text = $"Best Score: {playerName}: {m_Points}";
         }
     }
 
@@ -93,7 +95,9 @@ public class MainManager : MonoBehaviour
         GameOverText.SetActive(true);
         if(m_Points > highScore) {
             highScore = m_Points;
+            highScorePlayerName = playerName;
+            ProfileManager.instance.SaveProfile (highScorePlayerName, highScore);
+            highScoreText.text = $"Best Score: {highScorePlayerName}: {highScore}";
         }
-        ProfileManager.instance.SaveProfile (playerName, highScore);
     }
 }

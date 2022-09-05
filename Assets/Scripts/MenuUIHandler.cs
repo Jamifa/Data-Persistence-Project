@@ -11,9 +11,15 @@ public class MenuUIHandler : MonoBehaviour
 {
     [SerializeField] TMP_InputField nameBox;
     [SerializeField] string playerName;
+
+    private void Start() {
+        ProfileManager.instance.playerNameInputField = nameBox;
+        nameBox.text = ProfileManager.instance.playerName;
+    }
+
     public void ChangeName() {
         playerName = nameBox.text;
-        ProfileManager.instance.SaveProfile (playerName, ProfileManager.instance.highScore);
+        ProfileManager.instance.playerName = playerName;
     }
 
     public void StartGame() {
@@ -26,10 +32,5 @@ public class MenuUIHandler : MonoBehaviour
 #else
         Application.Quit();
 #endif
-    }
-
-    public void LoadProfile() {
-        playerName = ProfileManager.instance.LoadProfile ();
-        nameBox.text = playerName;
     }
 }
